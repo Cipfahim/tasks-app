@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TaskController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,7 +30,8 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::resource('tasks', TaskController::class)->except(['create', 'edit', 'show']);
+    Route::get('tasks/assigned', [TaskController::class, 'assigned'])->name('tasks.assigned');
+    Route::post('tasks/{task}/assign', [TaskController::class, 'assign'])->name('tasks.assign');
+    Route::post('tasks/{task}/remove', [TaskController::class, 'remove'])->name('tasks.remove');
 });
